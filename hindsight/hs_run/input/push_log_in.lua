@@ -10,6 +10,10 @@ local heka_stream_reader = require "heka_stream_reader"
 local hsr = heka_stream_reader.new("push_logs")
 local infile = io.stdin
 
+local base_dir = read_config("base_dir") or "/opt/push_load"
+local bucket = read_config("bucket") or "heka-logs"
+local region = read_config("region") or "us-east-1"
+
 function process_message()
     local yesterday = os.time()-24*60*60
     local s3_prefix = os.date("shared/%Y-%m", yesterday)
@@ -21,7 +25,8 @@ function process_message()
     local ls_output = ls_fd:read("*a")
     local s3_fname = string.match(ls_output, s3_fname_match_head .. "[%a%d%_%-]*%.gz")
 
-    local s3cat_cmd = string.format("/home/ec2-user/push_load/bin/s3cat -bucket='heka-logs' -aws-region='us-east-1' %s/%s -", s3_prefix, s3_fname)
+    local s3cat_cmd = string.format("%s/bin/s3cat -bucket='%s' -aws-region='%s' %s/%s -",
+                                    base_dir, bucket, region, s3_prefix, s3_fname)
     local infile = io.popen(s3cat_cmd)
     local found, consumed, read
     repeat

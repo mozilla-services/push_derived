@@ -8,7 +8,7 @@
 #               `heka-logs` S3 bucket.
 #
 ############################
-BASE_DIR=/home/ec2-user/push_load
+BASE_DIR=/opt/push_load
 sudo yum install -y postgresql-libs
 sudo yum install -y $BASE_DIR/rpms/luasandbox-0.10.2-Linux-core.rpm
 sudo ldconfig
