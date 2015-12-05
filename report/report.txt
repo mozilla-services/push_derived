@@ -1,0 +1,45 @@
+To: push_metrics@mozilla.com
+From: ${from_email}
+Subject: Nightly report on Push Endpoint server utilization metrics.
+
+----------------------------------------------------
+30 DAYS (${days_ago_30} through ${days_ago_last}, inclusive)
+----------------------------------------------------
+Total # of push requests:      ${push_count_30}
+Avg # of requests / day:       ${push_count_per_day_30}
+Total unique # endpoints:      ${endpoint_count_30}
+Avg # of endpoints / day:      ${endpoint_count_per_day_30}
+Total unique recipient UAs:    ${receiver_count_30}
+Avg # of recipient UAs/day:    ${receiver_count_per_day_30}
+
+Top ${top_count} receivers
+uaid_hash                                                  count    count/day
+${top_receivers_30}
+
+----------------------------------------------------
+7 DAYS (${days_ago_7} through ${days_ago_last}, inclusive)
+----------------------------------------------------
+Total # of push requests:      ${push_count_7}
+Avg # of requests / day:       ${push_count_per_day_7}
+Total unique # endpoints:      ${endpoint_count_7}
+Avg # of endpoints / day:      ${endpoint_count_per_day_7}
+Total unique recipient UAs:    ${receiver_count_7}
+Avg # of recipient UAs/day:    ${receiver_count_per_day_7}
+
+Top ${top_count} receivers
+uaid_hash                                                  count    count/day
+${top_receivers_7}
+
+----------------------------------------------------
+1 DAY (${days_ago_last})
+----------------------------------------------------
+Total # of push requests:      ${push_count_1}
+Avg # of requests / day:       ${push_count_per_day_1}
+Total unique # endpoints:      ${endpoint_count_1}
+Avg # of endpoints / day:      ${endpoint_count_per_day_1}
+Total unique recipient UAs:    ${receiver_count_1}
+Avg # of recipient UAs/day:    ${receiver_count_per_day_1}
+
+Top ${top_count} receivers
+uaid_hash                                                  count    count/day
+${top_receivers_1}

@@ -15,7 +15,7 @@ local bucket = read_config("bucket") or "heka-logs"
 local region = read_config("region") or "us-east-1"
 
 function process_message()
-    local yesterday = os.time()-24*60*60
+    local yesterday = os.time()-(24*60*60)
     local s3_prefix = os.date("shared/%Y-%m", yesterday)
     local fname_date = os.date("%Y%m%d", yesterday)
     local s3_fname_head = string.format("autopush-app.log-%s", fname_date)
