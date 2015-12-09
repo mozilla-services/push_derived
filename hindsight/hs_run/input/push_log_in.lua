@@ -13,11 +13,11 @@ local infile = io.stdin
 local base_dir = read_config("base_dir") or "/opt/push_load"
 local bucket = read_config("bucket") or "heka-logs"
 local region = read_config("region") or "us-east-1"
+local num_days = read_config("num_days") or 1
 
-function process_message()
-    local yesterday = os.time()-(24*60*60)
-    local s3_prefix = os.date("shared/%Y-%m", yesterday)
-    local fname_date = os.date("%Y%m%d", yesterday)
+local function process_day(date)
+    local s3_prefix = os.date("shared/%Y-%m", date)
+    local fname_date = os.date("%Y%m%d", date)
     local s3_fname_head = string.format("autopush-app.log-%s", fname_date)
     local s3_fname_match_head = string.format("autopush%%-app%%.log%%-%s", fname_date)
     local ls_cmd = string.format("aws s3 ls s3://heka-logs/%s/%s", s3_prefix, s3_fname_head)
@@ -37,5 +37,12 @@ function process_message()
             end
         until not found
     until read == 0
+end
+
+function process_message()
+    for i = num_days, 1, -1 do
+        local date = os.time()-(24*60*60*i)
+        process_day(date)
+    end
     return 0
 end
