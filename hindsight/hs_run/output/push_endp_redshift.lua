@@ -4,10 +4,16 @@
 
 local ds = require "derived_stream"
 
+local function get_uuid()
+    return string.format("%X%X%X%X-%X%X-%X%X-%X%X-%X%X%X%X%X",
+                         string.byte(read_message("Uuid"), 1, 16))
+end
+
 local name = "push_endpoint_requests"
 local schema = {
 --   column name                   field type   length  attributes   field name
     {"timestamp",                  "TIMESTAMP", nil,    "SORTKEY",   "Timestamp"},
+    {"uuid",                       "VARCHAR",   36,     nil,         get_uuid},
     {"remote_ip",                  "VARCHAR",   45,     nil,         "Fields[remote-ip]"},
     {"uaid_hash",                  "VARCHAR",   56,     nil,         "Fields[uaid_hash]"},
     {"message",                    "VARCHAR",   200,    nil,         "Fields[message]"},
