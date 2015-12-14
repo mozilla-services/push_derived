@@ -22,7 +22,7 @@ function write_message(fh, msg, schema)
             value = read_message(v[5])
         end
 
-        if value then
+        if value ~= nil then
             if v[1] == "Uuid" then
                 msg.Uuid = value
             elseif v[1] == "Timestamp" then

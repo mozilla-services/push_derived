@@ -14,10 +14,10 @@ local gsub = require "string".gsub
 
 setfenv(1, M) -- Remove external access to contain everything in the module
 
-local esc_chars = { ["\t"] = "\\t", ["\r"] = "\\r", ["\n"] = "\\n" }
+local esc_chars = { ["\t"] = "\\t", ["\r"] = "\\r", ["\n"] = "\\n", ["\\"] = "\\\\" }
 
 function esc_str(v)
-    return gsub(v, "[\t\r\n]", esc_chars)
+    return gsub(v, "[\t\r\n\\]", esc_chars)
 end
 
 function write_message(fh, schema, nil_value)
@@ -28,7 +28,7 @@ function write_message(fh, schema, nil_value)
         elseif type(v[5]) == "string" then
             value = read_message(v[5])
         end
-        if not value then
+        if value == nil then
             value = nil_value
         else
             value = tostring(value)
