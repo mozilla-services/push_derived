@@ -198,7 +198,7 @@ local function main()
             var_name = string.format("days_ago_%d", days)
         end
         days_ago = now-(24*60*60*(days+1))
-        results[var_name] = os.date("%Y/%m/%d")
+        results[var_name] = os.date("%Y/%m/%d", days_ago)
     end
 
     -- Add some values directly from report.cfg.
