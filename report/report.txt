@@ -1,6 +1,6 @@
 To: push_metrics@mozilla.com
 From: ${from_email}
-Subject: Nightly report on Push Endpoint server utilization metrics.
+Subject: Push Endpoint server utilization metrics through ${days_ago_last}
 
 ----------------------------------------------------
 30 DAYS (${days_ago_30} through ${days_ago_last}, inclusive)

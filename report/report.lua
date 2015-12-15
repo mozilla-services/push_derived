@@ -1,12 +1,16 @@
 -- This Source Code Form is subject to the terms of the Mozilla Public
 -- License, v. 2.0. If a copy of the MPL was not distributed with this
 -- file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
+-- This should be run with the directory in which the source code lives as the
+-- current working directory.
 package.path = package.path .. ';../hindsight/io_modules/?.lua'
 package.cpath = package.cpath .. ';../hindsight/io_modules/?.so'
 
 local driver = require "luasql.postgres"
 local io = require "io"
 local math = require "math"
+local os = require "os"
 local string = require "string"
 local table = require "table"
 
@@ -21,7 +25,7 @@ dofile("../hindsight/hs_run/output/push_endp_redshift.cfg")
 local debug = false
 
 local env = assert(driver.postgres())
-local con = assert(env:connect(db_config.name, db_config.user, db_config._password,
+local con = assert(env:connect(db_config.dbname, db_config.user, db_config._password,
                                db_config.host, db_config.port))
 local now = os.time()
 
@@ -31,7 +35,7 @@ local function run_query(query)
     end
     if debug then print("RUNNING QUERY: " .. query) end
     local ok, cur, err = pcall(con.execute, con, query)
-    if not ok then
+    if err or not ok then
         print(string.format("Query failed\nQUERY: %s\nERROR: %s", query, tostring(err)))
         return nil, err
     end
@@ -137,6 +141,15 @@ local function print_results(rows)
     print("--------------------------")
 end
 
+local function file_exists(name)
+    local f = io.open(name, "r")
+    if f == nil then
+        return false
+    end
+    io.close(f)
+    return true
+end
+
 local function main()
     local results = {}
 
@@ -212,8 +225,20 @@ local function main()
     io.input("report.txt")
     local email = io.read("*all")
     email = string.gsub(email, "%${([%a%d_]+)}", sub_value)
-    io.output("temp.txt")
+    local outfile_tmpl = "report-%Y%m%d.eml"
+    local outfile_name = os.date(outfile_tmpl, now)
+    io.output(outfile_name)
     io.write(email)
+
+    -- Send the email.
+    local sendmail_cmd = string.format("/usr/sbin/sendmail -vt < %s", outfile_name)
+    io.popen(sendmail_cmd)
+
+    -- Delete file from 3 days ago, if it exists.
+    outfile_name = os.date(outfile_tmpl, now-(24*60*60*3))
+    if file_exists(outfile_name) then
+        os.remove(outfile_name)
+    end
 end
 
 main()
