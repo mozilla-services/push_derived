@@ -24,3 +24,6 @@ sudo yum install -y $BASE_DIR/rpms/hindsight-0.3.0-Linux.rpm
 #
 ############################
 hindsight_cli $BASE_DIR/hindsight/etc/hindsight.cfg
+
+cd $BASE_DIR/report
+lua report.lua
