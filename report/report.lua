@@ -203,7 +203,6 @@ local function main()
 
     -- Add some values directly from report.cfg.
     results.top_count = top_count
-    results.from_email = from_email
 
     -- Create the top receiver count strings.
     for _, days in ipairs(day_counts) do
@@ -231,7 +230,7 @@ local function main()
     io.write(email)
 
     -- Send the email.
-    local sendmail_cmd = string.format("/usr/sbin/sendmail -vt < %s", outfile_name)
+    local sendmail_cmd = string.format("/usr/sbin/sendmail -vtF '%s' -r '%s' < '%s'", from_name, from_email, outfile_name)
     io.popen(sendmail_cmd)
 
     -- Delete file from 3 days ago, if it exists.
