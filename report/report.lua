@@ -104,6 +104,55 @@ local function top_receivers(days, count)
     return run_query(pieces)
 end
 
+-- Keyed by number of days, each bucket set has the SQL clause and the label.
+local receiver_buckets = {
+    [1] = {
+        {"count < 5", "pushes < 5"},
+        {"count >= 5 and count < 10", "5 <= pushes < 10"},
+        {"count >= 10 and count < 20", "10 <= pushes < 20"},
+        {"count >= 20 and count < 50", "20 <= pushes < 50"},
+        {"count >= 50 and count < 100", "50 <= pushes < 100"},
+        {"count >= 100 and count < 500", "100 <= pushes < 500"},
+        {"count >= 500 and count < 1000", "500 <= pushes < 1000"},
+        {"count >= 1000", "pushes >= 1000"}
+    },
+    [7] = {
+        {"count < 35", "pushes < 35"},
+        {"count >= 35 and count < 70", "35 <= pushes < 70"},
+        {"count >= 70 and count < 140", "70 <= pushes < 140"},
+        {"count >= 140 and count < 350", "140 <= pushes < 350"},
+        {"count >= 350 and count < 700", "350 <= pushes < 700"},
+        {"count >= 700 and count < 3500", "700 <= pushes < 3500"},
+        {"count >= 3500 and count < 7000", "3500 <= pushes < 7000"},
+        {"count >= 7000", "pushes >= 7000"}
+    },
+    [30] = {
+        {"count < 150", "pushes < 150"},
+        {"count >= 150 and count < 300", "150 <= pushes < 300"},
+        {"count >= 300 and count < 600", "300 <= pushes < 600"},
+        {"count >= 600 and count < 1500", "600 <= pushes < 1500"},
+        {"count >= 1500 and count < 3000", "1500 <= pushes < 3000"},
+        {"count >= 3000 and count < 15000", "3000 <= pushes < 15000"},
+        {"count >= 15000 and count < 30000", "15000 <= pushes < 30000"},
+        {"count >= 30000", "pushes >= 30000"}
+    }
+}
+
+local function receiver_histogram(days, buckets)
+    local inner = build_inner(days, "SELECT uaid_hash FROM %s", " UNION ALL ")
+    local subquery = "WITH sq AS (SELECT uaid_hash, COUNT(uaid_hash) FROM (%s) GROUP BY uaid_hash)"
+    subquery = string.format(subquery, inner)
+    local pieces = {subquery, " SELECT "}
+    local from_subquery = "(SELECT COUNT(uaid_hash) FROM sq WHERE %s) as \"%s\""
+    for i, v in ipairs(buckets) do
+        if i > 1 then
+            pieces[#pieces+1] = ", "
+        end
+        pieces[#pieces+1] = string.format(from_subquery, v[1], v[2])
+    end
+    return run_query(pieces)
+end
+
 local query_fns = {
     push_count = push_count,
     endpoint_count = endpoint_count,
@@ -208,6 +257,21 @@ local function main()
     for _, days in ipairs(day_counts) do
         var_name = string.format("top_receivers_%d", days)
         results[var_name] = format_top_count(results[var_name], days, "uaid_hash")
+    end
+
+    -- Receiver push count histogram.
+    local histogram_rows, row, histogram_output, num_spaces, spaces
+    for days, buckets in pairs(receiver_buckets) do
+        histogram_rows = receiver_histogram(days, buckets)
+        row = histogram_rows[1]
+        histogram_output = {}
+        for _, v in ipairs(buckets) do
+            num_spaces = 30 - string.len(v[2])
+            spaces = string.rep(" ", num_spaces)
+            histogram_output[#histogram_output+1] = string.format("%s:%s%d", v[2], spaces, row[v[2]])
+        end
+        var_name = string.format("receiver_histogram_%d", days)
+        results[var_name] = table.concat(histogram_output, "\n")
     end
 
     -- Define the substitution function.

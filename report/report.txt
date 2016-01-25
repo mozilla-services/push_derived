@@ -15,6 +15,9 @@ Top ${top_count} receivers
 uaid_hash                                                  count    count/day
 ${top_receivers_30}
 
+Receiver Histogram:
+${receiver_histogram_30}
+
 ----------------------------------------------------
 7 DAYS (${days_ago_7} through ${days_ago_last}, inclusive)
 ----------------------------------------------------
@@ -29,6 +32,9 @@ Top ${top_count} receivers
 uaid_hash                                                  count    count/day
 ${top_receivers_7}
 
+Receiver Histogram:
+${receiver_histogram_7}
+
 ----------------------------------------------------
 1 DAY (${days_ago_last})
 ----------------------------------------------------
@@ -42,3 +48,7 @@ Avg # of recipient UAs/day:    ${receiver_count_per_day_1}
 Top ${top_count} receivers
 uaid_hash                                                  count    count/day
 ${top_receivers_1}
+
+Receiver Histogram:
+${receiver_histogram_1}
+
