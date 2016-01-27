@@ -18,6 +18,9 @@ ${top_receivers_30}
 Receiver Histogram:
 ${receiver_histogram_30}
 
+Receiver Endpoint Histogram:
+${recv_chanid_histogram_30}
+
 ----------------------------------------------------
 7 DAYS (${days_ago_7} through ${days_ago_last}, inclusive)
 ----------------------------------------------------
@@ -34,6 +37,9 @@ ${top_receivers_7}
 
 Receiver Histogram:
 ${receiver_histogram_7}
+
+Receiver Endpoint Histogram:
+${recv_chanid_histogram_7}
 
 ----------------------------------------------------
 1 DAY (${days_ago_last})
@@ -52,3 +58,5 @@ ${top_receivers_1}
 Receiver Histogram:
 ${receiver_histogram_1}
 
+Receiver Endpoint Histogram:
+${recv_chanid_histogram_1}
