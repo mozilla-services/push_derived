@@ -73,15 +73,18 @@ local function push_count(days)
 end
 
 local function endpoint_count(days)
-    local inner = build_inner(days, "(SELECT DISTINCT channel_id FROM %s)", " UNION ALL ")
-    local pieces = {"SELECT count(DISTINCT channel_id) AS endpoint_count FROM (",
-                    inner, ")"}
+    local inner = build_inner(days, "(SELECT uaid_hash, channel_id FROM %s)", " UNION ALL ")
+    local pieces = {"SELECT SUM(count) AS endpoint_count FROM ",
+                    "(SELECT uaid_hash, count(DISTINCT channel_id) FROM (",
+                    inner, ") GROUP BY uaid_hash)"}
     return run_query(pieces)
 end
 
 local function endpoint_count_per_day(days)
-    local inner = build_inner(days, "(SELECT count(DISTINCT channel_id) FROM %s)", " + ")
-    local pieces = {"SELECT ", inner, "AS endpoint_count_per_day"}
+    local inner = "SELECT uaid_hash, count(DISTINCT channel_id) FROM %s GROUP BY uaid_hash"
+    inner = string.format("(SELECT SUM(count) FROM (%s))", inner)
+    local inner = build_inner(days, inner, " + ")
+    local pieces = {"SELECT (", inner, ") AS endpoint_count_per_day"}
     return run_query(pieces)
 end
 
