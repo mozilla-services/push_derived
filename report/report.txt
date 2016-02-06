@@ -1,5 +1,5 @@
 To: push_metrics@mozilla.com
-Subject: Push Endpoint server utilization metrics through ${days_ago_last}
+Subject: WebPush Endpoint server utilization metrics through ${days_ago_last}
 
 ----------------------------------------------------
 30 DAYS (${days_ago_30} through ${days_ago_last}, inclusive)
