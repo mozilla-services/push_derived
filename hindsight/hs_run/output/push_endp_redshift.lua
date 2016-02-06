@@ -9,7 +9,7 @@ local function get_uuid()
                          string.byte(read_message("Uuid"), 1, 16))
 end
 
-local name = "push_endpoint_requests"
+local name = read_config("table_prefix") or "push_endpoint_requests"
 local schema = {
 --   column name                   field type   length  attributes   field name
     {"timestamp",                  "TIMESTAMP", nil,    "SORTKEY",   "Timestamp"},
@@ -25,4 +25,3 @@ local schema = {
 }
 
 process_message, timer_event = ds.load_schema(name, schema)
-

@@ -20,7 +20,7 @@ local table = require "table"
 
 dofile("./report.cfg")
 -- Redshift settings are in the `db_config` table.
-dofile("../hindsight/hs_run/output/push_endp_redshift.cfg")
+dofile("../hindsight/hs_run/output/webpush_endp_redshift.cfg")
 
 local debug = false
 
@@ -55,7 +55,8 @@ local function build_inner(days, inner_tmpl, joiner)
     local days_ago, table_name, inner_piece
     for i = days, 1, -1 do
         days_ago = now-(24*60*60*(i+1))
-        table_name = os.date("push_endpoint_requests_%Y%m%d", days_ago)
+        days_ago = os.date("%Y%m%d", days_ago)
+        table_name = string.format("%s_%s", table_prefix, days_ago)
         inner_piece = string.format(inner_tmpl, table_name)
         table.insert(inner, inner_piece)
     end
