@@ -25,7 +25,7 @@ local function process_day(date)
     local ls_output = ls_fd:read("*a")
     local s3_fname = string.match(ls_output, s3_fname_match_head .. "[%a%d%_%-]*%.gz")
 
-    local s3cat_cmd = string.format("%s/bin/s3cat -connect_timeout=3600 -bucket='%s' -aws-region='%s' %s/%s -",
+    local s3cat_cmd = string.format("%s/bin/s3cat -read_timeout=3600 -bucket='%s' -aws-region='%s' %s/%s -",
                                     base_dir, bucket, region, s3_prefix, s3_fname)
     local infile = io.popen(s3cat_cmd)
     local found, consumed, read
