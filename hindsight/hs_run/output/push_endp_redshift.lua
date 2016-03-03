@@ -14,11 +14,11 @@ local schema = {
 --   column name                   field type   length  attributes   field name
     {"timestamp",                  "TIMESTAMP", nil,    "SORTKEY",   "Timestamp"},
     {"uuid",                       "VARCHAR",   36,     nil,         get_uuid},
-    {"remote_ip",                  "VARCHAR",   45,     nil,         "Fields[remote-ip]"},
+    {"remote_ip",                  "VARCHAR",   45,     nil,         "Fields[remote_ip]"},
     {"uaid_hash",                  "VARCHAR",   56,     nil,         "Fields[uaid_hash]"},
     {"message",                    "VARCHAR",   200,    nil,         "Fields[message]"},
     {"error",                      "BOOLEAN",   nil,    nil,         "Fields[error]"},
-    {"user_agent",                 "VARCHAR",   1000,   nil,         "Fields[user-agent]"},
+    {"user_agent",                 "VARCHAR",   1000,   nil,         "Fields[user_agent]"},
     {"task_uuid",                  "VARCHAR",   36,     nil,         "Fields[task_uuid]"},
     {"channel_id",                 "VARCHAR",   36,     nil,         "Fields[channel_id]"},
     {"system_name",                "VARCHAR",   200,    nil,         "Fields[system]"}
