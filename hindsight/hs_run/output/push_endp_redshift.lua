@@ -20,7 +20,7 @@ local schema = {
     {"error",                      "BOOLEAN",   nil,    nil,         "Fields[error]"},
     {"user_agent",                 "VARCHAR",   1000,   nil,         "Fields[user_agent]"},
     {"task_uuid",                  "VARCHAR",   36,     nil,         "Fields[task_uuid]"},
-    {"channel_id",                 "VARCHAR",   36,     nil,         "Fields[channel_id]"},
+    {"channel_id",                 "VARCHAR",   36,     nil,         "Fields[channelID]"},
     {"system_name",                "VARCHAR",   200,    nil,         "Fields[system]"}
 }
 
