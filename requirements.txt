@@ -1,0 +1,5 @@
+SQLAlchemy==1.0.12
+argparse==1.2.1
+click==6.6
+wsgiref==0.1.2
+psycopg2==2.6.1
