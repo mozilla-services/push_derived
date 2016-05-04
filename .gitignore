@@ -2,3 +2,6 @@
 #*#
 bin/*
 !bin/s3cat
+*.pyc
+*.egg-info/
+pmenv/
