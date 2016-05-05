@@ -31,4 +31,4 @@ sudo python setup.py develop
 ROLLUP_DB_STRING=postgresql+psycopg2://$DB_USER:$DB_PW@$DB_HOST:$DB_PORT/$DB_NAME
 ROLLUP_TABLE_PREFIX=webpush_endpoint_requests
 ROLLUP_DAYS_AGO=1
-push_metrics
+push_metrics process_logs
