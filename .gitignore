@@ -5,3 +5,4 @@ bin/*
 *.pyc
 *.egg-info/
 pmenv/
+db_creds.sh

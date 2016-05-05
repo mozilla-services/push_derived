@@ -25,5 +25,10 @@ sudo yum install -y $BASE_DIR/rpms/hindsight-0.3.0-Linux.rpm
 ############################
 hindsight_cli $BASE_DIR/hindsight/etc/hindsight.cfg
 
-cd $BASE_DIR/report
-lua report.lua
+sudo pip install -r requirements.txt
+sudo python setup.py develop
+. db_creds.sh
+ROLLUP_DB_STRING=postgresql+psycopg2://$DB_USER:$DB_PW@$DB_HOST:$DB_PORT/$DB_NAME
+ROLLUP_TABLE_PREFIX=webpush_endpoint_requests
+ROLLUP_DAYS_AGO=1
+push_metrics process_logs
