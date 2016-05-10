@@ -18,3 +18,8 @@ The `push_load.sh` script will install all required dependencies and run both
 the Hindsight job for loading the most recent log files and the Python job for
 updating the rollup tables. It is meant to be run on a brand new EC2 Centos
 instance based on the Mozilla Services standard Centos AMI.
+
+Before running the script, you must visit the `hindsight/hs_run/output` folder
+and edit all of the `*.cfg` files so that they contain the correct Redshift
+database connection values. You also must edit the db_creds.sh file and do the
+same. Unfortunately, yes, you have to do this repeatedly for each file.
