@@ -16,11 +16,12 @@ sudo yum install -y $BASE_DIR/rpms/hindsight-0.3.0-Linux.rpm
 
 ############################
 #
-# Before the following command will work, permissions need to be granted in two
-# places. The first is ensuring the AWS S3 credentials are correctly configured
-# to reach the `heka-logs` bucket. The second is ensuring the Redshift database
-# settings are correct in the
-# `$BASE_DIR/hindsight/hs_run/output/push_endp_redshift.cfg` file.
+# Before the following command will work, permissions need to be granted.
+# First you need to ensure the AWS S3 credentials are correctly configured to
+# reach the `heka-logs` bucket. Then all of the
+# `$BASE_DIR/hindsight/hs_run/output/push_endp_redshift.cfg` files and the
+# `db_creds.sh` file need to be updated with the correct Redshift database
+# cluster connection info and credentials.
 #
 ############################
 hindsight_cli $BASE_DIR/hindsight/etc/hindsight.cfg
