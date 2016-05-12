@@ -29,6 +29,6 @@ sudo pip install -r requirements.txt
 sudo python setup.py develop
 . db_creds.sh
 ROLLUP_DB_STRING=postgresql+psycopg2://$DB_USER:$DB_PW@$DB_HOST:$DB_PORT/$DB_NAME
-ROLLUP_TABLE_PREFIX=webpush_endpoint_requests
+ROLLUP_TABLE_PREFIX=webpush_conn_requests
 ROLLUP_DAYS_AGO=1
 push_metrics process_logs
