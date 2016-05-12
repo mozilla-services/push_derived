@@ -16,6 +16,7 @@ from sqlalchemy import (
     Column,
     Integer,
     String,
+    UniqueConstraint,
 )
 from sqlalchemy.sql import (
     cast,
@@ -31,17 +32,18 @@ meta = MetaData()
 # Daily Unique Rollups
 daily_rollup = Table(
     "daily_rollup", meta,
-    Column("date", Date),
+    Column("date", Date, nullable=False),
     Column("count", Integer),
     Column("browser_os", String(length=50)),
     Column("browser_version", String(length=5)),
+    UniqueConstraint("date", "browser_os", "browser_version"),
 )
 
 # Daily Statistics
 # Note: these avg are avg notifications per user, not users
 daily_stats = Table(
     "daily_stats", meta,
-    Column("date", Date),
+    Column("date", Date, nullable=False),
     Column("daily_avg", Numeric(10, 3)),
     Column("weekly_avg", Numeric(10, 3)),
     Column("dau", Numeric),
@@ -53,10 +55,11 @@ daily_stats = Table(
 # Monthly Unique Rollups
 monthly_rollup = Table(
     "monthly_rollup", meta,
-    Column("date", Date),
+    Column("date", Date, nullable=False),
     Column("count", Integer),
     Column("browser_os", String(length=50)),
     Column("browser_version", String(length=5)),
+    UniqueConstraint("date", "browser_os", "browser_version"),
 )
 
 
@@ -181,6 +184,9 @@ class Database(object):
         else:
             update_stats = dailies
 
+        if not update_stats:
+            return
+
         # Update the remaining stats
         self._conn.execute(daily_stats.insert(), [
             dict(date=x["date"],
@@ -195,7 +201,7 @@ class Database(object):
 
     def _add_missing_dau(self, table_prefix, days_ago):
         # Locate beginning table
-        tables = self._get_filtered_tables(table_prefix, days_ago+6)
+        tables = self._get_filtered_tables(table_prefix, days_ago+7)
         first_date = self._date_from_tablename(tables[0].name)
 
         # Group all the daily unique counts by date
@@ -214,6 +220,9 @@ class Database(object):
             ).label("dau")
         ])
         results = self._conn.execute(daus).fetchall()
+
+        if not results:
+            return
 
         # Update appropriate rows
         stmt = daily_stats.update().\
@@ -245,6 +254,9 @@ class Database(object):
         ])
         results = self._conn.execute(maus).fetchall()
 
+        if not results:
+            return
+
         # Update appropriate rows
         stmt = daily_stats.update().\
             where(daily_stats.c.date == bindparam("update_date")).\
@@ -265,6 +277,9 @@ class Database(object):
             where(daily_stats.c.date >= first_date)
         results = self._conn.execute(eng)
 
+        if not results:
+            return
+
         # Update engagement
         stmt = daily_stats.update().\
             where(daily_stats.c.date == bindparam("update_date")).\
@@ -280,7 +295,7 @@ class Database(object):
 
     def _generate_tablename(self, table_prefix, date):
         return table_prefix + "_" + "".join(
-            map(str, [date.year, date.month, date.day])
+            map("{0:02d}".format, [date.year, date.month, date.day])
         )
 
     def _generate_monthly_uniques(self, table, tables):
@@ -346,6 +361,7 @@ class Database(object):
             last = self._generate_tablename(table_prefix, last.date)
 
         # Generate the daily/weekly avg stats
+        tables = self._get_filtered_tables(table_prefix, days_ago+7)
         lbl = "Processing {} days for daily avg stats...".format(len(tables))
         dailies = []
         with click.progressbar(tables, label=lbl) as all_tables:
