@@ -210,7 +210,8 @@ class Database(object):
             func.sum(daily_rollup.c.count).label("count")
         ]).\
             where(daily_rollup.c.date >= first_date).\
-            group_by(daily_rollup.c.date)
+            group_by(daily_rollup.c.date).\
+            order_by(daily_rollup.c.date)
 
         # Average them over 6 prior days including today for DAU's
         daus = select([
@@ -218,7 +219,8 @@ class Database(object):
             func.avg(grouped_daily_unique.c.count).over(
                 order_by=text("date ROWS 6 PRECEDING")
             ).label("dau")
-        ])
+        ]).\
+            order_by(grouped_daily_unique.c.date)
         results = self._conn.execute(daus).fetchall()
 
         if not results:
@@ -230,7 +232,7 @@ class Database(object):
             values(dau=bindparam("dau"))
         self._conn.execute(stmt, [
             {"update_date": x.date, "dau": x.dau}
-            for x in results
+            for x in results[-days_ago:]
         ])
 
     def _add_missing_mau(self, table_prefix, days_ago):
@@ -243,7 +245,8 @@ class Database(object):
             func.sum(monthly_rollup.c.count).label("count")
         ]).\
             where(monthly_rollup.c.date >= first_date).\
-            group_by(monthly_rollup.c.date)
+            group_by(monthly_rollup.c.date).\
+            order_by(monthly_rollup.c.date)
 
         # Average them over 6 days prior inclding today for MAU's
         maus = select([
@@ -251,7 +254,8 @@ class Database(object):
             func.avg(grouped_monthly_unique.c.count).over(
                 order_by=text("date ROWS 6 PRECEDING")
             ).label("mau")
-        ])
+        ]).\
+            order_by(grouped_monthly_unique.c.date)
         results = self._conn.execute(maus).fetchall()
 
         if not results:
@@ -263,7 +267,7 @@ class Database(object):
             values(mau=bindparam("mau"))
         self._conn.execute(stmt, [
             {"update_date": x.date, "mau": x.mau}
-            for x in results
+            for x in results[-days_ago:]
         ])
 
     def _add_missing_engagement(self, tables):
